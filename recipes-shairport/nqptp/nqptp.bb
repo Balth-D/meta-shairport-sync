@@ -7,18 +7,34 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 DEPENDS += "initscripts"
 
-SRCREV = "5672c33983ab0125cd067be2d004598c49bf45c3"
+SRCREV = "b8384c4a53632bab028c451a625ef51a1e767f29"
 PV = "+git${SRCPV}"
+
+FILESEXTRAPATHS:append := ":${THISDIR}/files"
 SRC_URI = "git://github.com/mikebrady/nqptp.git;branch=main;protocol=https \
-           file://nqptp.d"
+           file://nqptp.d \
+           file://nqptp.service"
 
 S = "${WORKDIR}/git"
 
-inherit autotools update-rc.d
+inherit autotools update-rc.d systemd
 
-INITSCRIPT_NAME = "nqptp"
 
 do_install:append() {
-	install -d ${D}${sysconfdir}/init.d
-    install -m 0755 ${WORKDIR}/nqptp.d ${D}${sysconfdir}/init.d/nqptp
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'sysvinit', 'true', 'false', d)}; then
+        install -d ${D}${sysconfdir}/init.d
+        install -m 0755 ${WORKDIR}/nqptp.d ${D}${sysconfdir}/init.d/nqptp
+    fi
+
+    if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+        install -d ${D}/${systemd_system_unitdir}
+        install -m 0644 ${WORKDIR}/nqptp.service ${D}${systemd_system_unitdir}/nqptp.service
+    fi
 }
+
+INITSCRIPT_NAME = "nqptp"
+SYSTEMD_SERVICE:${PN} = "nqptp.service"
+SYSTEMD_AUTO_ENABLE = "enable"
+
+FILES:${PN} += "${systemd_system_unitdir}/nqptp.service \
+                ${sysconfdir}/init.d/nqptp"

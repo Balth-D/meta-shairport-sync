@@ -5,14 +5,10 @@ This layer provides shairport-sync recipes for use with OpenEmbedded and/or Yoct
 
 This layer depends on:
 
-* URI: git://git.openembedded.org/openembedded-core
-  - branch: master
-  - revision: HEAD
-
 * URI: git://git.openembedded.org/meta-openembedded
   - layers: meta-oe
-  - branch: master
-  - revision: HEAD
+  - branch: scarthgap
+  - revision: 2b26d30fc7f478f5735d514f0c1bc28f6a4148b6
 
 Contributing
 ------------
@@ -22,7 +18,7 @@ report problems in GitHub's issue tracker.
 
 Maintainers
 -----------
-* Balthazar DELIERS
+* Balthazar DANEL
 
 Recipes
 -------
